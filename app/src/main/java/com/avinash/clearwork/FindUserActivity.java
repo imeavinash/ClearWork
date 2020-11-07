@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.SearchRecentSuggestions;
-import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.LinearLayout;
 
+import com.avinash.clearwork.User.UserListAdapter;
+import com.avinash.clearwork.User.UserObject;
+import com.avinash.clearwork.Utils.CountryToPhonePrefix;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

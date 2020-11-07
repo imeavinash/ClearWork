@@ -1,4 +1,4 @@
-package com.avinash.clearwork;
+package com.avinash.clearwork.User;
 
 public class UserObject {
 
