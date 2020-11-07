@@ -79,7 +79,7 @@ public class FindUserActivity extends AppCompatActivity {
                 phone = ISOPrefix + phone;
 
             if(!rawPhones.contains(phone)){
-                UserObject mContact = new UserObject(name,phone);
+                UserObject mContact = new UserObject("",name,phone);
                 contactList.add(mContact);
                 getUserDetails(mContact);
                 rawPhones.add(phone);
@@ -110,7 +110,7 @@ public class FindUserActivity extends AppCompatActivity {
                                 name = childSnapshot.child("name").getValue().toString();
                             //Log.d(tag,"childsnapshot name = "+name+" phone = "+phone);
 
-                            UserObject mUser = new UserObject(name,phone);
+                            UserObject mUser = new UserObject(childSnapshot.getKey(),name,phone);
                             if(name.equals(phone)){
                                 for(UserObject mContactIterator : contactList){
                                     if(mContactIterator.getPhone().equals(mUser.getPhone())){
