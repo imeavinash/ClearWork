@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "234289123254",
+    "firebase_url": "https://clearwork-69aa9.firebaseio.com",
+    "project_id": "clearwork-69aa9",
+    "storage_bucket": "clearwork-69aa9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234289123254:android:7dcfb5395ad8ca57fb7b17",
+        "android_client_info": {
+          "package_name": "com.avinash.clearwork"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "234289123254-nejhtsm6a2dbqksmdpe1rdmh0c19gic4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.avinash.clearwork",
+            "certificate_hash": "c8036a3cc6aa3039347323acd7a0ddbef4bb4550"
+          }
+        },
+        {
+          "client_id": "234289123254-n6p8r5dv3afg7vg1vhq8kbb11gsjcnoo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIoBJinE1XVRuVdMhJedzEroUb6sEX2qo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "234289123254-n6p8r5dv3afg7vg1vhq8kbb11gsjcnoo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
