@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.provider.SearchRecentSuggestions;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class FindUserActivity extends AppCompatActivity {
+
+    public static final String tag = "FindUserActivity";
 
     private RecyclerView mUserList;
     private RecyclerView.Adapter mUserListAdapter;
@@ -57,7 +60,10 @@ public class FindUserActivity extends AppCompatActivity {
 
         String ISOPrefix = getCountryISO();
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,null,null,null);
+        int count = 0;
+        ArrayList<String> rawPhones = new ArrayList<>();
         while(phones.moveToNext()){
+            count++;
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
@@ -66,14 +72,24 @@ public class FindUserActivity extends AppCompatActivity {
             phone = phone.replace("(", "");
             phone = phone.replace(")", "");
 
+            if(phone.contains("9148635406"))
+            Log.d(tag,"count = "+count+" getContactList cursor phone = "+phone);
+
             if(!String.valueOf(phone.charAt(0)).equals("+"))
                 phone = ISOPrefix + phone;
 
+            if(!rawPhones.contains(phone)){
+                UserObject mContact = new UserObject(name,phone);
+                contactList.add(mContact);
+                getUserDetails(mContact);
+                rawPhones.add(phone);
 
-            UserObject mContact = new UserObject(name,phone);
-            contactList.add(mContact);
-            getUserDetails(mContact);
             }
+
+
+            }
+
+        rawPhones.clear();
 
         }
 
@@ -85,12 +101,14 @@ public class FindUserActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists()){
+                        //Log.d(tag,"getUserDetails snapshot exists");
                         String phone = "", name = "";
                         for(DataSnapshot childSnapshot: snapshot.getChildren()){
                             if(childSnapshot.child("phone").getValue()!=null)
                                 phone = childSnapshot.child("phone").getValue().toString();
                             if(childSnapshot.child("name").getValue()!=null)
                                 name = childSnapshot.child("name").getValue().toString();
+                            //Log.d(tag,"childsnapshot name = "+name+" phone = "+phone);
 
                             UserObject mUser = new UserObject(name,phone);
                             userList.add(mUser);
