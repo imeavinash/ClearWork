@@ -57,7 +57,7 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
-        chatList = new ArrayList<>();
+
 
         getPermissions();
         initializeRecyclerView();
@@ -97,6 +97,8 @@ public class MainPageActivity extends AppCompatActivity {
 
 
     private void initializeRecyclerView() {
+
+        chatList = new ArrayList<>();
 
         mChatList = findViewById(R.id.chatList);
         mChatList.setNestedScrollingEnabled(false);
