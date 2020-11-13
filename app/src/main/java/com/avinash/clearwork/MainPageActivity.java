@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import com.avinash.clearwork.Chat.ChatListAdapter;
 import com.avinash.clearwork.Chat.ChatObject;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +36,8 @@ public class MainPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
+
+        Fresco.initialize(this);
 
         Button mLogout = findViewById(R.id.logout);
         Button mFindUser = findViewById(R.id.findUser);
