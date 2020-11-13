@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import com.avinash.clearwork.Chat.ChatListAdapter;
 import com.avinash.clearwork.Chat.ChatObject;
+import com.avinash.clearwork.Utils.SendNotification;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -57,6 +58,7 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
+        new SendNotification("message 1","heading 1", null);
         Button mLogout = findViewById(R.id.logout);
         Button mFindUser = findViewById(R.id.findUser);
 
@@ -69,6 +71,7 @@ public class MainPageActivity extends AppCompatActivity {
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OneSignal.setSubscription(false);
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
