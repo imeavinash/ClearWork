@@ -58,7 +58,7 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
 
-        new SendNotification("message 1","heading 1", null);
+        //new SendNotification("message 1","heading 1", null);
         Button mLogout = findViewById(R.id.logout);
         Button mFindUser = findViewById(R.id.findUser);
 
