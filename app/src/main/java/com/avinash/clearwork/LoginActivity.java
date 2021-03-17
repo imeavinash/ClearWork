@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Log.d(tag,"on click mSens");
+                Log.d(tag,"on click mSend");
 
                 if(mVerificationId != null ){
 
