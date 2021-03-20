@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,18 +32,28 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
     String tag = "LoginActivity";
 
-    private EditText mPhoneNumber, mCode;
-    private Button mSend;
+    private EditText  mCode, mPhoneNumber2;
+    private LinearLayout mPhoneNumberLayout, mVerifyLayout;
+
+    private Button mGetOtp, mVerify;
 
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
     String mVerificationId;
+
+    Matcher m;
+
+    //String pattern = "^([0-9\\+]|\\(\\d{1,3}\\))[0-9\\-\\. ]{3,15}$";
+
+    String pattern = "^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,33 +66,80 @@ public class LoginActivity extends AppCompatActivity {
 
         userIsLoggedIn();
 
-        mPhoneNumber = findViewById(R.id.phoneNumber);
-        mCode = findViewById(R.id.code);
-        mSend = findViewById(R.id.send);
+        mPhoneNumberLayout = findViewById(R.id.phoneNumberLayout);
+        mVerifyLayout = findViewById(R.id.verifyLayout);
 
-        mSend.setOnClickListener(new View.OnClickListener() {
+        //mPhoneNumber = findViewById(R.id.phoneNumber);
+        mPhoneNumber2 = findViewById(R.id.phoneNumber);
+        mCode = findViewById(R.id.code);
+       // mSend = findViewById(R.id.send);
+        mVerify = findViewById(R.id.verify);
+        mGetOtp = findViewById(R.id.getOTP);
+        mGetOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String phoneNumber = mPhoneNumber2.getText().toString();
+                if(phoneNumber.isEmpty()){
+                    Log.d(tag,"Phone number is empty");
+                    Toast.makeText(getApplicationContext(),"Please enter number",Toast.LENGTH_SHORT).show();
+                }else{
 
-                Log.d(tag,"on click mSend");
+                    Pattern r = Pattern.compile(pattern);
+                    m = r.matcher(phoneNumber.trim());
+                    if(m.find()){
+                        Log.d(tag,"Phone Number matches pattern - "+phoneNumber);
+                        startPhoneNumberVerification(phoneNumber);
+                    }else{
+                        Log.d(tag,"Phone Number does not match pattern - "+phoneNumber);
+                        Toast.makeText(LoginActivity.this, "Please enter valid number", Toast.LENGTH_SHORT).show();
+                    }
 
+                }
+            }
+        });
+
+
+        mVerify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if(mVerificationId != null ){
 
                     Log.d(tag,"verification id is not null");
                     verifyPhoneNumberWithCode();
                 }else{
                     Log.d(tag,"verification id is null");
-                    startPhoneNumberVerification(mPhoneNumber.getText().toString());
+                    mPhoneNumberLayout.setVisibility(View.VISIBLE);
+                    mVerifyLayout.setVisibility(View.GONE);
+                   // startPhoneNumberVerification(mPhoneNumber.getText().toString());
                 }
-
             }
         });
+//        mSend.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Log.d(tag,"on click mSend");
+//
+//                if(mVerificationId != null ){
+//
+//                    Log.d(tag,"verification id is not null");
+//                    verifyPhoneNumberWithCode();
+//                }else{
+//                    Log.d(tag,"verification id is null");
+//
+//                    startPhoneNumberVerification(mPhoneNumber.getText().toString());
+//                }
+//
+//            }
+//        });
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
 
                 Log.d("LoginActivity","onVerificationCompleted");
+                String code = phoneAuthCredential.getSmsCode().toString();
+                mCode.setText(code);
                 signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
@@ -87,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onVerificationFailed(@NonNull FirebaseException e) {
 
                 Log.d(tag,"onVerificationFailed");
+                Toast.makeText(LoginActivity.this, "Verification failed - Please enter valid number", Toast.LENGTH_LONG).show();
 
             }
 
@@ -98,7 +159,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 Log.d(tag,"onCodeSent");
                 mVerificationId = verificationId;
-                mSend.setText("Verify Code");
+                mPhoneNumberLayout.setVisibility(View.GONE);
+                mVerifyLayout.setVisibility(View.VISIBLE);
+                //mSend.setText("Verify Code");
 
 
 
@@ -116,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("LoginActivity","verifyPhoneNumberWithCode");
 
         String code = mCode.getText().toString();
-        if(code != null && mVerificationId!=null){
+        if(code != null && !code.isEmpty() && mVerificationId!=null){
             PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId,mCode.getText().toString());
             signInWithPhoneAuthCredential(credential);
         }else{
