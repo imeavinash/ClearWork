@@ -9,6 +9,8 @@
     android:orientation="vertical"
     android:background="@drawable/otp_screen_bgd">
 
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -137,6 +139,53 @@
 
         </LinearLayout>
 
+
+        <LinearLayout
+            android:id="@+id/nameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+
+
+            <EditText
+                android:id="@+id/name"
+                android:hint="Enter Name here"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/phone_number_bg"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                />
+
+            <Button
+                android:id="@+id/allSet"
+                android:text="Verify"
+                android:textColor="@color/yellow"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/get_otp_bg"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_margin="20dp"/>
+
+
+
+
+
+
+
+        </LinearLayout>
+
     </LinearLayout>
+
+    <include
+        android:id="@+id/llProgressBar"
+        android:visibility="gone"
+        layout="@layout/progressbarlogin"
+        />
 
 </RelativeLayout>

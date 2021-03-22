@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,13 +40,20 @@ public class LoginActivity extends AppCompatActivity {
 
     String tag = "LoginActivity";
 
-    private EditText  mCode, mPhoneNumber2;
-    private LinearLayout mPhoneNumberLayout, mVerifyLayout;
 
-    private Button mGetOtp, mVerify;
+
+    private EditText  mCode, mPhoneNumber2, mName;
+    private LinearLayout mPhoneNumberLayout, mVerifyLayout, mNameLayout;
+
+    private Button mGetOtp, mVerify, mAllSet;
 
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+
+    public ProgressBar mProgressBar;
+    public LinearLayout mProgressBarLayout;
+
+
 
     String mVerificationId;
 
@@ -68,13 +76,40 @@ public class LoginActivity extends AppCompatActivity {
 
         mPhoneNumberLayout = findViewById(R.id.phoneNumberLayout);
         mVerifyLayout = findViewById(R.id.verifyLayout);
+        mNameLayout = findViewById(R.id.nameLayout);
+        mProgressBarLayout = findViewById(R.id.llProgressBar);
 
         //mPhoneNumber = findViewById(R.id.phoneNumber);
         mPhoneNumber2 = findViewById(R.id.phoneNumber);
         mCode = findViewById(R.id.code);
+        mName = findViewById(R.id.name);
        // mSend = findViewById(R.id.send);
         mVerify = findViewById(R.id.verify);
         mGetOtp = findViewById(R.id.getOTP);
+        mAllSet = findViewById(R.id.allSet);
+
+        //mProgressBar = findViewById(R.id.llProgressBar);
+
+        mAllSet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mName.getText().toString().isEmpty()){
+                    return;
+                }
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user!=null){
+
+                    final DatabaseReference mUserDB = FirebaseDatabase.getInstance().getReference().child("user").child(user.getUid());
+                    Map<String, Object> userMap = new HashMap<>();
+                    String name = mName.getText().toString();
+                    userMap.put("phone",user.getPhoneNumber());
+                    userMap.put("name",name);
+                    mUserDB.updateChildren(userMap);
+                    userIsLoggedIn();
+                }
+            }
+        });
         mGetOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(m.find()){
                         Log.d(tag,"Phone Number matches pattern - "+phoneNumber);
                         startPhoneNumberVerification(phoneNumber);
+                        mProgressBarLayout.setVisibility(View.VISIBLE);
                     }else{
                         Log.d(tag,"Phone Number does not match pattern - "+phoneNumber);
                         Toast.makeText(LoginActivity.this, "Please enter valid number", Toast.LENGTH_SHORT).show();
@@ -105,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(mVerificationId != null ){
 
                     Log.d(tag,"verification id is not null");
+                    mProgressBarLayout.setVisibility(View.VISIBLE);
                     verifyPhoneNumberWithCode();
                 }else{
                     Log.d(tag,"verification id is null");
@@ -138,6 +175,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
 
                 Log.d("LoginActivity","onVerificationCompleted");
+                mProgressBarLayout.setVisibility(View.GONE);
                 String code = phoneAuthCredential.getSmsCode().toString();
                 mCode.setText(code);
                 signInWithPhoneAuthCredential(phoneAuthCredential);
@@ -159,6 +197,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Log.d(tag,"onCodeSent");
                 mVerificationId = verificationId;
+                mProgressBarLayout.setVisibility(View.GONE);
                 mPhoneNumberLayout.setVisibility(View.GONE);
                 mVerifyLayout.setVisibility(View.VISIBLE);
                 //mSend.setText("Verify Code");
@@ -198,22 +237,36 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(tag,"signinWithCredential onComplete");
                 if(task.isSuccessful()){
                     Log.d(tag,"task is successful");
+
                     final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if(user!=null){
                         final DatabaseReference mUserDB = FirebaseDatabase.getInstance().getReference().child("user").child(user.getUid());
                         mUserDB.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                                 if(!snapshot.exists()){
 
-                                    Map<String, Object> userMap = new HashMap<>();
-                                    userMap.put("phone",user.getPhoneNumber());
-                                    userMap.put("name",user.getPhoneNumber());
-                                    mUserDB.updateChildren(userMap);
+                                    mProgressBarLayout.setVisibility(View.GONE);
 
+                                    mVerifyLayout.setVisibility(View.GONE);
+                                    mNameLayout.setVisibility(View.VISIBLE);
+
+
+
+
+
+
+
+
+
+                                }else{
+                                    mProgressBarLayout.setVisibility(View.GONE);
+                                    userIsLoggedIn();
                                 }
 
-                                userIsLoggedIn();
+
+
                             }
 
                             @Override
