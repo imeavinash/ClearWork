@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText  mCode, mPhoneNumber2, mName;
     private LinearLayout mPhoneNumberLayout, mVerifyLayout, mNameLayout;
+    private TextView mCountryCode;
 
     private Button mGetOtp, mVerify, mAllSet;
 
@@ -83,6 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         mPhoneNumber2 = findViewById(R.id.phoneNumber);
         mCode = findViewById(R.id.code);
         mName = findViewById(R.id.name);
+
+        mCountryCode = findViewById(R.id.countryCode);
        // mSend = findViewById(R.id.send);
         mVerify = findViewById(R.id.verify);
         mGetOtp = findViewById(R.id.getOTP);
@@ -114,6 +118,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String phoneNumber = mPhoneNumber2.getText().toString();
+                String countryCode = mCountryCode.getText().toString();
+                phoneNumber = countryCode + phoneNumber;
                 if(phoneNumber.isEmpty()){
                     Log.d(tag,"Phone number is empty");
                     Toast.makeText(getApplicationContext(),"Please enter number",Toast.LENGTH_SHORT).show();
@@ -123,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                     m = r.matcher(phoneNumber.trim());
                     if(m.find()){
                         Log.d(tag,"Phone Number matches pattern - "+phoneNumber);
+                        //String countryCode = mCountryCode.getText().toString();
                         startPhoneNumberVerification(phoneNumber);
                         mProgressBarLayout.setVisibility(View.VISIBLE);
                     }else{
