@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,6 +22,7 @@ import com.avinash.clearwork.Chat.MessageAdapter;
 import com.avinash.clearwork.Chat.MessageObject;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +45,7 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<MessageObject> messageList;
 
     String chatID;
+    String appUserID;
 
     DatabaseReference mChatDb;
 
@@ -73,6 +76,13 @@ public class ChatActivity extends AppCompatActivity {
         initializeMessage();
         initializeMedia();
 
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        appUserID = mUser.getUid();
+
+
+
+
         getChatMessages();
     }
 
@@ -96,7 +106,7 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     }
 
-                    MessageObject mMessage = new MessageObject(snapshot.getKey(),creatorID,text,mediaUrlList);
+                    MessageObject mMessage = new MessageObject(snapshot.getKey(),creatorID,text,mediaUrlList,appUserID);
                     messageList.add(mMessage);
                     mChatLayoutManager.scrollToPosition(messageList.size()-1);
                     mChatAdapter.notifyDataSetChanged();

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -297,6 +298,14 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if(user!=null){
             Log.d("LoginActivity","user is not null");
+
+            String userID = user.getUid();
+
+            SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+            myEdit.putString("userID",userID);
+            myEdit.apply();
+            myEdit.commit();
             startActivity(new Intent(getApplicationContext(),MainPageActivity.class));
             finish();
             return;
